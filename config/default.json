@@ -1,0 +1,4 @@
+{
+    "mongoURI": "mongodb+srv://MERN-admin:MERN-admin@mern-dev-cluster.bi26u.mongodb.net/<dbname>?retryWrites=true&w=majority"
+}
+
