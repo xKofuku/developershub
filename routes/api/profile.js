@@ -5,6 +5,7 @@ const { check, validationResult } = require("express-validator");
 
 const Profile = require("../../models/Profile");
 const User = require("../../models/User");
+const { route } = require("./users");
 
 // @route GET api/profile/me
 // @desc Get current user's profile
@@ -54,7 +55,7 @@ router.post(
 			facebook,
 			twitter,
 			instagram,
-			linked,
+			linkedin,
 		} = req.body;
 		//Build profile Object
 		const profileFields = {};
@@ -78,7 +79,8 @@ router.post(
 
 		console.log(profileFields.skills);
 		try {
-			let profile = Profile.findOne({ user: req.user.id });
+			let profile = await Profile.findOne({ user: req.user.id });
+
 			if (profile) {
 				//Update
 				profile = await Profile.findOneAndUpdate(
@@ -90,7 +92,7 @@ router.post(
 			}
 			//Create
 			profile = new Profile(profileFields);
-			await Profile.save();
+			await profile.save();
 			res.json(profile);
 		} catch (err) {
 			console.error(err.message);
@@ -98,5 +100,55 @@ router.post(
 		}
 	}
 );
+
+// @route GET api/profile
+// @desc Get all profiles
+// @access Public
+router.get("/", async (req, res) => {
+	try {
+		const profiles = await Profile.find().populate("user", ["name", "avatar"]);
+		res.json(profiles);
+	} catch (err) {
+		console.error(err.message);
+		res.status(500).send("Server Error");
+	}
+});
+
+// @route GET api/profile/user/:user_id
+// @desc Get profile by user ID
+// @access Public
+router.get("/user/:user_id", async (req, res) => {
+	try {
+		const profile = await Profile.findOne({
+			user: req.params.user_id,
+		}).populate("user", ["name", "avatar"]);
+
+		if (!profile) return res.status(400).json({ msg: "Profile not found" });
+
+		res.json(profile);
+	} catch (err) {
+		console.error(err.message);
+		if (err.kind == "ObjectId") {
+			return res.status(400).json({ msg: "Profile not found" });
+		}
+		res.status(500).send("Server Error");
+	}
+});
+
+// @route Delete api/profile
+// @desc Get profile, user & posts
+// @access Private
+router.delete("/", auth, async (req, res) => {
+	try {
+		//Remove Profile
+		await Profile.findOneAndRemove({ user: req.user.id });
+		//Remove User
+		await User.findOneAndRemove({ _id: req.user.id });
+		res.json({ msg: "User deleted" });
+	} catch (err) {
+		console.error(err.message);
+		res.status(500).send("Server Error");
+	}
+});
 
 module.exports = router;
