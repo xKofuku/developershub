@@ -1,5 +1,7 @@
 {
     "mongoURI": "mongodb+srv://MERN-admin:MERN-admin@mern-dev-cluster.bi26u.mongodb.net/<dbname>?retryWrites=true&w=majority",
-    "jwtSecret": "cd1b5fc3b5b0064ac863890f1e63dcc872008ac63f6b3114b98799d4548dfee70ae8f9f411b9925ff65f389ea9e6552ad66c6a958050b0d13fe91736c3321eb2"
+    "jwtSecret": "cd1b5fc3b5b0064ac863890f1e63dcc872008ac63f6b3114b98799d4548dfee70ae8f9f411b9925ff65f389ea9e6552ad66c6a958050b0d13fe91736c3321eb2",
+    "githubClientId": "e80b54aaa7747eae7b67",
+    "githubSecret": "526560d72074214a5ffc3eab26ddacf2552ec439"
 }
 
